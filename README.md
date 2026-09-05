@@ -3,9 +3,9 @@
 
 [![Ministry](https://img.shields.io/badge/Organization-Ministry%20of%20Home%20Affairs-0d1117?style=for-the-badge&logo=gov.in&logoColor=orange)](https://www.mha.gov.in)
 [![Department](https://img.shields.io/badge/Department-NCRB%20Women%20Safety%20Division-1e293b?style=for-the-badge)](https://ncrb.gov.in)
-[![Theme](https://img.shields.io/badge/Theme-Blockchain%20%26%20Cybersecurity-indigo?style=for-the-badge)](https://github.com/maitree2005/SakshyaVault)
-[![Legal Statute](https://img.shields.io/badge/Admissibility-Section%2065B%20Evidence%20Act%20/%20Sec%2063%20BSA-emerald?style=for-the-badge)](https://github.com/maitree2005/SakshyaVault)
-[![Victim Protection](https://img.shields.io/badge/Compliance-Sec%20228A%20IPC%20%26%20POCSO-pink?style=for-the-badge)](https://github.com/maitree2005/SakshyaVault)
+[![Theme](https://img.shields.io/badge/Theme-Blockchain%20%26%20Cybersecurity-indigo?style=for-the-badge)](https://github.com/maitree2411/SakshyaVault)
+[![Legal Statute](https://img.shields.io/badge/Admissibility-Section%2065B%20Evidence%20Act%20/%20Sec%2063%20BSA-emerald?style=for-the-badge)](https://github.com/maitree2411/SakshyaVault)
+[![Victim Protection](https://img.shields.io/badge/Compliance-Sec%20228A%20IPC%20%26%20POCSO-pink?style=for-the-badge)](https://github.com/maitree2411/SakshyaVault)
 
 ---
 
@@ -157,7 +157,7 @@ SakshyaVault/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/maitree2005/SakshyaVault.git
+git clone https://github.com/maitree2411/SakshyaVault.git
 cd SakshyaVault
 ```
 
@@ -220,7 +220,7 @@ npm run dev
 - **Ministry:** Ministry of Home Affairs (MHA)
 - **Department:** National Crime Records Bureau (NCRB), Women Safety Division
 - **Theme:** Blockchain & Cybersecurity
-- **Author & Maintainer:** [@maitree2005](https://github.com/maitree2005)
+- **Author & Maintainer:** [@maitree2411](https://github.com/maitree2411)
 
 ---
 
