@@ -1,50 +1,164 @@
-// Prisma schema for AnonHire backend
+// Prisma schema for NyayDMS / NCRB LegiChain
+// Secure Legal & Investigation Document Management System
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id            String   @id @default(uuid())
-  address       String   @unique
-  did           String?  @unique
-  email         String?  @unique
-  role          UserRole @default(CANDIDATE)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String   @id @default(uuid())
+  address         String   @unique
+  did             String?  @unique
+  name            String   @default("Authorized Officer")
+  badgeNumber     String?
+  department      String   @default("Law Enforcement Agency")
+  role            String   @default("POLICE") // "POLICE", "FORENSIC", "JUDICIARY", "NCRB_ADMIN", "AUDITOR", "CANDIDATE", "UNIVERSITY", "EMPLOYER"
+  email           String?  @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  // Relations
+  // Legal DMS Relations
+  uploadedDocuments  LegalDocument[]     @relation("Uploader")
+  investigatedCases  Case[]              @relation("InvestigatingOfficer")
+  auditLogs          AuditLog[]
+
+  // Legacy Relations
   issuedCredentials     Credential[] @relation("Issuer")
   receivedCredentials   Credential[] @relation("Subject")
   verifications         Verification[]
-  auditLogs             AuditLog[]
 
   @@index([address])
   @@index([did])
+  @@index([role])
 }
 
-enum UserRole {
-  ADMIN
-  UNIVERSITY
-  EMPLOYER
-  INTERNSHIP_PROVIDER
-  CANDIDATE
-  VERIFIER
+model Case {
+  id                    String          @id @default(uuid())
+  caseNumber            String          @unique // e.g. "DL/CYB/2026/0412"
+  firNumber             String          @unique // e.g. "FIR-089/2026"
+  title                 String
+  description           String?
+  policeStation         String          // e.g. "Cyber Crime Police Station, North District"
+  district              String          // e.g. "Central Delhi"
+  state                 String          @default("Delhi")
+  sections              String          // e.g. "Sec 66D IT Act, Sec 420 IPC, Sec 354A IPC"
+  status                String          @default("UNDER_INVESTIGATION") // "UNDER_INVESTIGATION", "CHARGE_SHEETED", "IN_TRIAL", "DISPOSED"
+  isSensitive           Boolean         @default(false) // Flag for Women Safety, POCSO, High Confidentiality
+  investigatingOfficerId String?
+  investigatingOfficer   User?          @relation("InvestigatingOfficer", fields: [investigatingOfficerId], references: [id])
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  // Relations
+  documents             LegalDocument[]
+
+  @@index([caseNumber])
+  @@index([firNumber])
+  @@index([policeStation])
+  @@index([status])
+  @@index([isSensitive])
 }
 
+model LegalDocument {
+  id                String            @id @default(uuid())
+  caseId            String
+  case              Case              @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  title             String            // e.g. "First Information Report (FIR) Original"
+  documentType      String            // "FIR", "CASE_DIARY", "WITNESS_STATEMENT", "SEIZURE_MEMO", "FORENSIC_REPORT", "MEDICAL_REPORT", "CHARGE_SHEET", "COURT_ORDER", "JUDGMENT"
+  documentHash      String            @unique // SHA-256 / Poseidon cryptographic digest
+  ipfsHash          String            @default("QmPlaceholderLocalHash")
+  fileSize          Int               @default(1024)
+  fileType          String            @default("application/pdf")
+  encryptedData     String?           // AES-256 encrypted payload or encrypted key
+  version           Int               @default(1)
+  previousHash      String?
+  isRevoked         Boolean           @default(false)
+  revocationReason  String?
+  isAnonymized      Boolean           @default(false) // True for protected witness/victim records
+  redactedFields    String?           // JSON string of redacted entities (e.g. victim name, location)
+  txHash            String?           // Blockchain anchor transaction hash
+  uploaderAddress   String
+  uploaderId        String?
+  uploader          User?             @relation("Uploader", fields: [uploaderId], references: [id])
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  // Relations
+  custodyHistory    ChainOfCustody[]
+  verifications     VerificationRecord[]
+
+  @@index([documentHash])
+  @@index([caseId])
+  @@index([documentType])
+  @@index([uploaderAddress])
+  @@index([isAnonymized])
+}
+
+model ChainOfCustody {
+  id                String         @id @default(uuid())
+  documentId        String
+  document          LegalDocument  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  fromParty         String         // e.g. "Insp. Rajesh Kumar (IO)"
+  toParty           String         // e.g. "Dr. Sunita Rao (Senior Scientific Officer, CFSL)"
+  transferReason    String         // e.g. "Transferred physical digital drive for ballistic and memory forensic analysis"
+  location          String         // e.g. "Central Forensic Science Laboratory, CBI Complex"
+  timestamp         DateTime       @default(now())
+  txHash            String?        // Blockchain transfer record hash
+  officerSignature  String?        // Digital/cryptographic signature of the custodian
+
+  @@index([documentId])
+  @@index([timestamp])
+}
+
+model VerificationRecord {
+  id                String         @id @default(uuid())
+  documentHash      String
+  documentId        String?
+  document          LegalDocument? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  isAuthentic       Boolean
+  verifiedAt        DateTime       @default(now())
+  verifierAddress   String?
+  verifierAgency    String?        // e.g. "High Court of Delhi - Special Court"
+  remarks           String?
+  proofType         String         @default("SHA256_ONCHAIN")
+
+  @@index([documentHash])
+  @@index([verifiedAt])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  officerName String?
+  action      String   // "UPLOAD", "VIEW", "DOWNLOAD", "TRANSFER", "AMEND", "REDACT", "VERIFY", "EXPORT_65B"
+  resource    String   // Target Case ID or Document ID
+  details     String?  // JSON string or summary
+  ipAddress   String?  @default("127.0.0.1")
+  userAgent   String?
+  timestamp   DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([timestamp])
+}
+
+// -----------------------------------------------------------------------------
+// Legacy Models
+// -----------------------------------------------------------------------------
 model Credential {
   id                String           @id @default(uuid())
   credentialHash    String           @unique
-  credentialType    CredentialType
+  credentialType    String
   issuerId          String
   subjectId         String
   ipfsHash          String
-  encryptedData     String?          @db.Text
+  encryptedData     String?
   issuedAt          DateTime
   expiresAt         DateTime?
   isRevoked         Boolean          @default(false)
@@ -54,7 +168,6 @@ model Credential {
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 
-  // Relations
   issuer            User             @relation("Issuer", fields: [issuerId], references: [id])
   subject           User             @relation("Subject", fields: [subjectId], references: [id])
   verifications     Verification[]
@@ -62,13 +175,6 @@ model Credential {
   @@index([credentialHash])
   @@index([issuerId])
   @@index([subjectId])
-  @@index([credentialType])
-}
-
-enum CredentialType {
-  ACADEMIC
-  JOB
-  INTERNSHIP
 }
 
 model Verification {
@@ -78,32 +184,13 @@ model Verification {
   isValid         Boolean
   verifiedAt      DateTime @default(now())
   proofType       String?
-  proofData       String?  @db.Text
+  proofData       String?
 
-  // Relations
   credential      Credential @relation(fields: [credentialId], references: [id])
   verifier        User       @relation(fields: [verifierId], references: [id])
 
   @@index([credentialId])
   @@index([verifierId])
-}
-
-model AuditLog {
-  id          String   @id @default(uuid())
-  userId      String
-  action      String
-  resource    String
-  details     String?  @db.Text
-  ipAddress   String?
-  userAgent   String?
-  timestamp   DateTime @default(now())
-
-  // Relations
-  user        User     @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-  @@index([action])
-  @@index([timestamp])
 }
 
 model IPFSPin {

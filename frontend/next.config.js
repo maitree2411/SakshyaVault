@@ -1,5 +1,9 @@
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+try {
+  require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+} catch (_e) {
+  // Next.js automatically loads .env and .env.local
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -14,11 +18,27 @@ const nextConfig = {
   },
   webpack: (config) => {
     config.resolve.fallback = { 
+      ...config.resolve.fallback,
       fs: false, 
       net: false, 
       tls: false,
       '@react-native-async-storage/async-storage': false,
-      'react-native': false
+      'react-native': false,
+      '@x402/evm/upto/client': false,
+      '@x402/evm/exact/client': false,
+      '@x402/core/client': false,
+      '@x402/svm/exact/client': false,
+      '@x402/evm': false,
+      '@x402/core': false,
+    };
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@x402/evm/upto/client': false,
+      '@x402/evm/exact/client': false,
+      '@x402/core/client': false,
+      '@x402/svm/exact/client': false,
+      '@x402/evm': false,
+      '@x402/core': false,
     };
     config.externals.push('pino-pretty', 'encoding');
     

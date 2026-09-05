@@ -72,9 +72,9 @@ export async function decryptCredentialData(encryptedData: string): Promise<Decr
   combined.set(tagBytes, cipherBytes.length);
 
   const plainBuf = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: ivBytes, tagLength: 128 },
+    { name: 'AES-GCM', iv: ivBytes as any, tagLength: 128 },
     key,
-    combined
+    combined as any
   );
 
   const plainText = new TextDecoder().decode(plainBuf);

@@ -1114,7 +1114,7 @@ function ShareModal({ onClose, credentials, preSelectedCredential }: any) {
               <div className="text-2xl">{cred.type === 'ACADEMIC' ? '🎓' : cred.type === 'JOB' ? '💼' : '📋'}</div>
               <div>
                 <p className="font-semibold text-gray-900">{cred.type} Credential</p>
-                <p className="text-sm text-gray-500">{getCredentialIssuerLabel(cred)} · {cred.issuedAt}</p>
+                <p className="text-sm text-gray-500">{(cred.issuer || 'Issuer')} · {cred.issuedAt}</p>
               </div>
             </div>
           )}
