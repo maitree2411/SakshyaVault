@@ -11,9 +11,9 @@
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "migrate": "set -a && . ../.env && set +a && prisma migrate dev",
-    "db:push": "set -a && . ../.env && set +a && prisma db push",
-    "db:seed": "set -a && . ../.env && set +a && ts-node prisma/seed.ts"
+    "db:push": "prisma db push",
+    "db:seed": "ts-node prisma/seed-legal.ts",
+    "seed": "ts-node prisma/seed-legal.ts"
   },
   "keywords": [],
   "author": "",

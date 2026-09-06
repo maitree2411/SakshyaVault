@@ -4,7 +4,6 @@ import { WagmiProvider, createConfig, http } from 'wagmi';
 import { sepolia, polygonMumbai } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
-import '@rainbow-me/rainbowkit/styles.css';
 
 const config = getDefaultConfig({
   appName: 'AnonHire',

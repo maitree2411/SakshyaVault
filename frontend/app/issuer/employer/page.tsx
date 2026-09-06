@@ -399,8 +399,8 @@ export default function EmployerIssuerPage() {
           <ol className="list-decimal list-inside space-y-2 text-green-800">
             <li>Connect your company wallet using the button above</li>
             <li>Fill in all the required employee information</li>
-            <li>Check "Currently employed" if the employee is still working</li>
-            <li>Click "Issue Job Credential" to create the credential</li>
+            <li>Check &quot;Currently employed&quot; if the employee is still working</li>
+            <li>Click &quot;Issue Job Credential&quot; to create the credential</li>
             <li>The credential will be stored on IPFS and recorded on blockchain</li>
             <li>Share the credential hash with the employee</li>
           </ol>

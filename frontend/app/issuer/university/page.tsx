@@ -497,7 +497,7 @@ export default function UniversityIssuerPage() {
           <ol className="list-decimal list-inside space-y-2 text-blue-800">
             <li>Connect your university wallet using the button above</li>
             <li>Fill in all the required student information</li>
-            <li>Click "Issue Academic Credential" to create the credential</li>
+            <li>Click &quot;Issue Academic Credential&quot; to create the credential</li>
             <li>The credential will be stored on IPFS and recorded on blockchain</li>
             <li>Share the credential hash with the student</li>
           </ol>
@@ -605,7 +605,7 @@ export default function UniversityIssuerPage() {
                 <FaInfoCircle className="text-blue-600 mt-1" />
                 <div>
                   <p className="text-sm text-blue-800">
-                    <strong>Note:</strong> You'll need to sign a message with your wallet to complete registration.
+                    <strong>Note:</strong> You&apos;ll need to sign a message with your wallet to complete registration.
                   </p>
                 </div>
               </div>

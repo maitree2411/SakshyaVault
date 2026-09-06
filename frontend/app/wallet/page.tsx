@@ -957,7 +957,7 @@ function ZKPModal({ onClose, credentials }: any) {
                   className="w-full p-2 border border-gray-200 rounded-lg text-xs font-mono bg-gray-50 resize-none"
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  Send this JSON to the verifier. They paste it on the verifier page under "ZKP Verification".
+                  Send this JSON to the verifier. They paste it on the verifier page under &quot;ZKP Verification&quot;.
                 </p>
               </div>
 

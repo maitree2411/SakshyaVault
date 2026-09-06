@@ -1007,13 +1007,13 @@ export default function VerifierPage() {
               <li>Ask the candidate to generate a proof package from their wallet</li>
               <li>Toggle ZKP mode on</li>
               <li>Paste the proof JSON in the form above</li>
-              <li>Click "Verify ZKP" to validate the proof</li>
+              <li>Click &quot;Verify ZKP&quot; to validate the proof</li>
             </ol>
           ) : (
             <ol className="list-decimal list-inside space-y-2 text-blue-800">
               <li>Ask the candidate to provide their credential hash</li>
               <li>Enter the hash in the field above</li>
-              <li>Click "Verify Credential" to check authenticity</li>
+              <li>Click &quot;Verify Credential&quot; to check authenticity</li>
               <li>View the verification result and credential details</li>
             </ol>
           )}
